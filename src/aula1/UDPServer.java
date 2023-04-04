@@ -6,7 +6,7 @@ import java.util.List;
 class UDPServer {
 	public static void main(String args[]) throws Exception {
 		List<String> blacklist = new ArrayList<>();
-		blacklist.add("127.0.0.1");
+		blacklist.add("");
 
 		//Create server socket
 		DatagramSocket serverSocket = new DatagramSocket(9876);
@@ -26,10 +26,10 @@ class UDPServer {
 			//Get the data of the packet
 			String sentence = new String(receivedPacket.getData(), 0, receivedPacket.getLength());
 			System.out.println("RECEIVED FROM CLIENT " + ip +": " + sentence);
-			//Change the data to capital letters
-			String capitalizedSentence = sentence.toUpperCase();
+			//Reverse the input
+			String reversedSentence = new StringBuilder(sentence).reverse().toString();
 			byte[] sendData = new byte[sentence.length()];
-			sendData = capitalizedSentence.getBytes();
+			sendData = reversedSentence.getBytes();
 			//Send back the response to the client
 			DatagramPacket sendPacket = new DatagramPacket(sendData, sendData.length, IPAddress, port);
 			serverSocket.send(sendPacket);
