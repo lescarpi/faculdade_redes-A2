@@ -31,7 +31,7 @@ class TCPServer {
              DataOutputStream output = new DataOutputStream(s.getOutputStream());
 			 
 			 // keep repeating until an empty line is read.
-			 while (input.compareTo("") != 0) {
+			 while (!input.equals("tchau")) {
 				 // convert input to upper case and echo back to
 				 // client.
 				 output.writeBytes(input.toUpperCase() + "\n");

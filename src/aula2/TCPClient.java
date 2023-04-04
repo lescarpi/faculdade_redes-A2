@@ -27,7 +27,7 @@ public class TCPClient {
         String sentence;  
         sentence = inFromUser.readLine();
         // keep repeating until an empty line is read.
-		while (sentence.compareTo("") != 0) {
+		while (!sentence.equals("tchau")) {
            // Send a user input to server
            serverWriter.writeBytes(sentence +"\n");
 		   // Server should convert to upper case and reply.
@@ -37,8 +37,8 @@ public class TCPClient {
            //read user input again
            sentence = inFromUser.readLine();
         }
-		// Send an empty line to server to end communication.
-		serverWriter.writeBytes("\n");
+		// Envia um último tchau para evitar NullPointerException no Server e encerrar a conexão
+		serverWriter.writeBytes("tchau"+"\n");
 		//Close the socket
 		s.close();
 	}
