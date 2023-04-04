@@ -1,47 +1,30 @@
-package aula2;//
-//  TCPClient.java
-//  Kurose & Ross
-//
+package aula2;
 
 import java.io.*;
 import java.net.*;
 
 public class TCPClient {
 
-	public static void main (String args[]) throws Exception {
-		// throws Exception here because don't want to deal
-		// with errors in the rest of the code for simplicity.
-		// (note: NOT a good practice!)
-		// Connect to the server process running at localhost:9000
-		Socket s = new Socket("localhost", 9000);
-	    // The next 2 lines create a output stream we can
-		// write to.  (To write TO SERVER)
-		PrintWriter serverWriter = new PrintWriter(s.getOutputStream(), true);
-		// The next 2 lines create a buffer reader that
-		// reads from the standard input. (to read stream FROM SERVER)
-		BufferedReader serverReader = new BufferedReader(new InputStreamReader(s.getInputStream()));
-        //create buffer reader to read input from user. Read the user input to string 'sentence'
+    public static void main(String args[]) throws Exception {
+        Socket s = new Socket("localhost", 9000);
+
+        PrintWriter serverWriter = new PrintWriter(s.getOutputStream(), true);
+        BufferedReader serverReader = new BufferedReader(new InputStreamReader(s.getInputStream()));
         BufferedReader inFromUser = new BufferedReader(new InputStreamReader(System.in));
-        String sentence;  
+
+        System.out.println("Informe seu nome:");
+        String sentence;
         sentence = inFromUser.readLine();
 
-		ClientThread clientThread = new ClientThread(s);
-		clientThread.start();
+        Thread serverReaderThread = new Thread(new ServerReaderThread(s));
+        serverReaderThread.start();
 
-        // keep repeating until an empty line is read.
-		while (!sentence.equals("tchau")) {
-           // Send a user input to server
-           serverWriter.println(sentence + "\n");
-		   // Server should convert to upper case and reply.
-		   // Read server's reply below and output to screen.
-           String response = serverReader.readLine();
-		   System.out.println(response);
-           //read user input again
-           sentence = inFromUser.readLine();
+        while (!sentence.equals("tchau")) {
+            serverWriter.println(sentence);
+            sentence = inFromUser.readLine();
         }
-		// Envia um último tchau para evitar NullPointerException no Server e encerrar a conexão
-		serverWriter.println("tchau"+"\n");
-		//Close the socket
-		s.close();
-	}
+        // Envia um último tchau para evitar NullPointerException no Server e encerrar a conexão
+        serverWriter.println("tchau" + "\n");
+        s.close();
+    }
 }

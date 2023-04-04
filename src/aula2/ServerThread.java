@@ -27,19 +27,28 @@ public class ServerThread extends Thread {
             String ip = socket.getInetAddress().getHostAddress();
             System.out.println("Connection established from: " + ip);
 
+            String nome = "";
+            boolean primeiraMensagem = true;
+
             while (true) {
+                if (primeiraMensagem) {
+                    nome = input.readLine();
+                    printToAllClients(nome + " entrou.");
+                    primeiraMensagem = false;
+                    continue;
+                }
                 String outputString = input.readLine();
 
-                if(outputString.equals("tchau")) {
+                if (outputString.equals("tchau")) {
                     break;
                 }
 
-                printToAllClients(outputString.toUpperCase());
                 if (!outputString.isEmpty()) {
+                    printToAllClients(nome + ": " + outputString.toUpperCase());
                     System.out.println("Server received " + outputString + " from: " + ip);
                 }
             }
-            printToAllClients(ip + " encerrou a conexão.");
+            printToAllClients(nome + " encerrou a conexão.");
         } catch (IOException e) {
             System.out.println(e.getMessage());
         }

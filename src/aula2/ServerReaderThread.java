@@ -5,29 +5,29 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.Socket;
 
-public class ClientThread extends Thread {
+public class ServerReaderThread implements Runnable {
 
     private Socket socket;
-    private BufferedReader input;
+    private BufferedReader serverReader;
 
-    public ClientThread(Socket s) throws IOException {
-        this.socket = s;
-        this.input = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+    public ServerReaderThread(Socket socket) throws IOException {
+        this.socket = socket;
+        this.serverReader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
     }
 
     @Override
     public void run() {
         try {
-            while (true) {
-                String response = input.readLine();
+            String response;
+            while ((response = serverReader.readLine()) != null) {
                 System.out.println(response);
             }
         } catch (IOException e) {
             System.out.println(e.getMessage());
         } finally {
             try {
-                input.close();
-            } catch (Exception e) {
+                socket.close();
+            } catch (IOException e) {
                 System.out.println(e.getMessage());
             }
         }
